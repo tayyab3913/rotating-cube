@@ -15,32 +15,44 @@ public class CubeBehaviour : MonoBehaviour
     {
         scale = transform.localScale;
         counter = 0;
+
+        InvokeRepeating("IncreaseSize", 0, 0.05f);
+        InvokeRepeating("DecreaseSize", 0, 0.05f);
     }
 
     // Update is called once per frame
     void Update()
     {
+        CubeRotation();
+    }
+
+
+    // This method checks the horizontal and vertical input and rotates the cube accordingly
+    void CubeRotation()
+    {
         horizontalInput = Input.GetAxis("Horizontal");
         transform.Rotate(Vector3.up * horizontalInput * rotationSpeed);
         verticalInput = Input.GetAxis("Vertical");
         transform.Rotate(Vector3.right * verticalInput * rotationSpeed);
+    }
+
+    // This method increases the size if space is called and keeps a record of incremention
+    void IncreaseSize()
+    {
         if (Input.GetKey(KeyCode.Space))
         {
             transform.localScale = new Vector3(transform.localScale.x + scaleIncreaseRate, transform.localScale.y + scaleIncreaseRate, transform.localScale.z + scaleIncreaseRate);
             counter++;
-        } else if(Input.GetKeyUp(KeyCode.Space))
-        {
-            transform.localScale = scale;
         }
     }
 
-//This method could be used to gradually decrease the size but it works without this method so I stopped improving it
+    // This method decreases the size if space is not pressed and the size of the cube has increased because of incrementation
     void DecreaseSize()
     {
-        for (int i = counter; i > 1; i--)
+        if(counter > 0 && !Input.GetKey(KeyCode.Space))
         {
             transform.localScale = new Vector3(transform.localScale.x - scaleIncreaseRate, transform.localScale.y - scaleIncreaseRate, transform.localScale.z - scaleIncreaseRate);
+            counter--;
         }
-        counter = 0;
     }
 }
